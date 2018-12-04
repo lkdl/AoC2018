@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 
 class Solution {
-    constructor(folder, useTraining, transform) {
+    constructor(folder, useTraining, ...transform) {
 
         if (!folder) {
             throw 'No folder provided'
@@ -11,10 +11,11 @@ class Solution {
         try {
             this.input = fs.readFileSync(path.join(folder, useTraining ? 'training.txt' : 'input.txt'), 'utf8')
 
-            if (transform && typeof transform === 'function') {
-                this.input = transform(this.input)
-            }
-
+            transform.forEach(t => {
+                if (t && typeof t === 'function') {
+                    this.input = t(this.input)
+                }
+            })
         } catch (e) {
             console.log(e)
             throw 'Failed to read input file!'
